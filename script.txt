@@ -1,0 +1,39 @@
+//Create index
+curl -XPUT http://localhost:9200/data
+
+//Close index for update setting
+curl -XPOST http://localhost:9200/data/_close
+
+
+curl -XPUT http://localhost:9200/data/_settings -d '{
+    "index": {
+      
+      "filter": {
+        "thai": {
+          "type": "org.apache.lucene.analysis.th.ThaiWordFilterFactory"
+        }
+      }
+    }
+}'
+
+//Open
+curl -XPOST http://localhost:9200/data/_open
+
+curl -XPUT http://localhost:9200/data/address/_mapping -d '{
+    "address": {
+      "properties": {
+        "province_id": {"type": "integer"},
+        "province_code": {"type": "string"},
+        "province_name": {"type": "string", "analyzer": "thai"},
+        "amphur_id": {"type": "integer"},
+        "amphur_code": {"type": "string"},
+        "amphur_name": {"type": "string", "analyzer": "thai"},
+        "district_id": {"type": "integer"},
+        "district_code": {"type": "string"},
+        "district_name": {"type": "string", "analyzer": "thai"}
+      }
+    }
+}'
+
+//Delete index
+curl -XDELETE http://localhost:9200/data/
